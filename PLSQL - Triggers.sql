@@ -1,11 +1,13 @@
-@ d:\hr_create.sql
-@ d:\hr_popul.sql
-SET LINESIZE 120
-SET PAGESIZE 50
+/*
+РџРѕРґРіРѕС‚РѕРІРєР° Р±Р°Р·С‹ РґР°РЅРЅС‹С…
+1. Р’С‹РїРѕР»РЅРёС‚СЊ СЃРєСЂРёРїС‚ hr_create.sql СЃ РєРѕРјР°РЅРґР°РјРё СЃРѕР·РґР°РЅРёСЏ С‚Р°Р±Р»РёС† Р‘Р”.
+2. Р’С‹РїРѕР»РЅРёС‚СЊ СЃРєСЂРёРїС‚ hr_popul.sql СЃ РєРѕРјР°РЅРґР°РјРё Р·Р°РїРѕР»РЅРµРЅРёСЏ С‚Р°Р±Р»РёС† Р‘Р”.
+*/
+
 
 /*
-	‡адание 1. †урналирование DML-операций
-ђазработать механизм журнализации DML-операций, выполняемых над таблицей с подразделениями
+	Р—Р°РґР°РЅРёРµ 1. Р–СѓСЂРЅР°Р»РёСЂРѕРІР°РЅРёРµ DML-РѕРїРµСЂР°С†РёР№
+Р Р°Р·СЂР°Р±РѕС‚Р°С‚СЊ РјРµС…Р°РЅРёР·Рј Р¶СѓСЂРЅР°Р»РёР·Р°С†РёРё DML-РѕРїРµСЂР°С†РёР№, РІС‹РїРѕР»РЅВ¤РµРјС‹С… РЅР°Рґ С‚Р°Р±Р»РёС†РµР№ СЃ РїРѕРґСЂР°Р·РґРµР»РµРЅРёВ¤РјРё
 */
 
 CREATE TABLE LOG_DEPARTMENTS
@@ -41,8 +43,8 @@ UPDATE departments SET department_name = 'OdessaOffice' WHERE department_id = 26
 DELETE FROM departments WHERE department_id = 26;
 
 
---	‡адание 2. ЂвтоматическаЯ генерациЯ целочисленных значений PK-колонок
--- ‡адание 2.1
+--	Р—Р°РґР°РЅРёРµ 2. РђРІС‚РѕРјР°С‚РёС‡РµСЃРєР°СЏ РіРµРЅРµСЂР°С†РёСЏ С†РµР»РѕС‡РёСЃР»РµРЅРЅС‹С… Р·РЅР°С‡РµРЅРёР№ PK-РєРѕР»РѕРЅРѕРє
+-- Р—Р°РґР°РЅРёРµ 2.1
 CREATE OR REPLACE TRIGGER empl_id_nextval
 	BEFORE INSERT ON employees 
 	FOR EACH ROW
@@ -62,12 +64,12 @@ BEGIN
 END;
 /
 
---	Џроверка:
+--	РџСЂРѕРІРµСЂРєР°:
 INSERT INTO employees (employee_id, last_name, email, hire_date, job_id, salary, department_id)
     VALUES (null, 'name_1', 'email_1', SYSDATE, 'IT_PROG', 1000, 60);
 INSERT INTO departments VALUES (null, 'NetCracker', 100, 2600);
 
--- ‡адание 2.2
+-- Р—Р°РґР°РЅРёРµ 2.2
 CREATE OR REPLACE PROCEDURE CREATE_SEQUENCE 
 	( table_name IN VARCHAR2,
 	 column_name IN VARCHAR2)
@@ -101,7 +103,7 @@ BEGIN
 END;
 /
 
---	Џроверка:
+--	РџСЂРѕРІРµСЂРєР°:
 BEGIN
 	CREATE_SEQUENCE('employees','employee_id');
 	CREATE_SEQUENCE('departments','department_id');
@@ -109,7 +111,7 @@ END;
 /
 
 
---	 ‡адание 3. Ћбеспечение сложных правил ограничениЯ целостности данных
+--	 Р—Р°РґР°РЅРёРµ 3. РћР±РµСЃРїРµС‡РµРЅРёРµ СЃР»РѕР¶РЅС‹С… РїСЂР°РІРёР» РѕРіСЂР°РЅРёС‡РµРЅРёСЏ С†РµР»РѕСЃС‚РЅРѕСЃС‚Рё РґР°РЅРЅС‹С…
 CREATE TABLE SALARIES
   (	COUNTRY_NAME  VARCHAR2(40)
   , JOB_TITLE     VARCHAR2(35)
@@ -144,22 +146,22 @@ BEGIN
 EXCEPTION
 	WHEN TAX_OUT_OF_RANGE THEN
 		RAISE_APPLICATION_ERROR(-20500,
-    'Ћклад ' || TO_CHAR(:NEW.salary) || 
-    ' вне диапазона длЯ должности ' || JOB ||
-    ' длЯ служащего ' || :NEW.last_name);
+    'РћРєР»Р°Рґ ' || TO_CHAR(:NEW.salary) || 
+    ' РІРЅРµ РґРёР°РїР°Р·РѕРЅР° РґР»СЏ РґРѕР»Р¶РЅРѕСЃС‚Рё ' || JOB ||
+    ' РґР»СЏ СЃР»СѓР¶Р°С‰РµРіРѕ ' || :NEW.last_name);
 
 	WHEN NO_DATA_FOUND THEN
 		RAISE_APPLICATION_ERROR(-20550, 
-			'ЌевернаЯ должность id=' || :NEW.job_id);
+			'РќРµРІРµСЂРЅР°СЏ РґРѕР»Р¶РЅРѕСЃС‚СЊ id=' || :NEW.job_id);
 END;
 /
 
---	Џроверка:
+--	РџСЂРѕРІРµСЂРєР°:
 INSERT INTO employees (employee_id, last_name, email, hire_date, job_id, salary, department_id)
     VALUES (300, 'name_1', 'email_1', TO_DATE('01-01-2000', 'dd-mm-yyyy'), 'IT_PROG', 1000, 60);
 
 
---	‡адание 4. ЊатериализациЯ представлений (виртуальных таблиц)
+--	Р—Р°РґР°РЅРёРµ 4. РњР°С‚РµСЂРёР°Р»РёР·Р°С†РёСЏ РїСЂРµРґСЃС‚Р°РІР»РµРЅРёР№ (РІРёСЂС‚СѓР°Р»СЊРЅС‹С… С‚Р°Р±Р»РёС†)
 DECLARE
   CURSOR tab IS
     SELECT e.department_id AS d_id, MAX(e.salary) AS max_s
@@ -212,7 +214,7 @@ END;
 /
 
 
---	‡адание 5. ЂвтоматическаЯ генерациЯ строковых значений PK-колонок
+--	Р—Р°РґР°РЅРёРµ 5. РђРІС‚РѕРјР°С‚РёС‡РµСЃРєР°СЏ РіРµРЅРµСЂР°С†РёСЏ СЃС‚СЂРѕРєРѕРІС‹С… Р·РЅР°С‡РµРЅРёР№ PK-РєРѕР»РѕРЅРѕРє
 CREATE OR REPLACE FUNCTION GET_JOB_ID 
 	(job_title IN VARCHAR2)
 RETURN VARCHAR2
@@ -260,7 +262,7 @@ INSERT INTO jobs VALUES (null, 'Stock Manager', 5555, 8888);
 UPDATE jobs SET MIN_SALARY = 1000 WHERE JOB_ID = 'S_M';
 
 
---	‡адание 6. ѓенерациЯ PL/SQL-кода журналирующих триггеров
+--	Р—Р°РґР°РЅРёРµ 6. Р“РµРЅРµСЂР°С†РёСЏ PL/SQL-РєРѕРґР° Р¶СѓСЂРЅР°Р»РёСЂСѓСЋС‰РёС… С‚СЂРёРіРіРµСЂРѕРІ
 CREATE OR REPLACE FUNCTION GENERATE_LOGGING 
 	(tab_name IN VARCHAR2)
 RETURN VARCHAR2

@@ -1,27 +1,17 @@
---	Лабораторный практикум 8
-
 /*
-Подготовка базы данных
-1. Выполнить скрипт hr_create.sql с командами создания таблиц БД.
-2. Выполнить скрипт hr_popul.sql с командами заполнения таблиц БД.
+РџРѕРґРіРѕС‚РѕРІРєР° Р±Р°Р·С‹ РґР°РЅРЅС‹С…
+1. Р’С‹РїРѕР»РЅРёС‚СЊ СЃРєСЂРёРїС‚ hr_create.sql СЃ РєРѕРјР°РЅРґР°РјРё СЃРѕР·РґР°РЅРёСЏ С‚Р°Р±Р»РёС† Р‘Р”.
+2. Р’С‹РїРѕР»РЅРёС‚СЊ СЃРєСЂРёРїС‚ hr_popul.sql СЃ РєРѕРјР°РЅРґР°РјРё Р·Р°РїРѕР»РЅРµРЅРёСЏ С‚Р°Р±Р»РёС† Р‘Р”.
 */
 
-CREATE USER titarenko IDENTIFIED BY asdf;
-GRANT CONNECT, RESOURCE TO titarenko;
-GRANT CREATE VIEW TO titarenko;
-CONNECT titarenko/asdf
-@ d:\hr_create.sql
-@ d:\hr_popul.sql
-SET LINESIZE 120
-SET PAGESIZE 50
 
 
---	Задание 1 Создание хранимых процедур по пакетной работе с данными
-/*	Повторить выполнение задания 1.2 из лабораторной работы 7, включив анонимный PL/SQL-блок в хранимую процедуру, учитывая, что:
-- название процедуры – generate_emp;
-- входным параметром является количество вносимых строк;
-- использовать пакетную операцию внесения FORALL.
-Сравнить времена выполнения PL/SQL-блоков этого задания и задания 1.2 из лабораторной работы 7.
+--	Р—Р°РґР°РЅРёРµ 1 РЎРѕР·РґР°РЅРёРµ С…СЂР°РЅРёРјС‹С… РїСЂРѕС†РµРґСѓСЂ РїРѕ РїР°РєРµС‚РЅРѕР№ СЂР°Р±РѕС‚Рµ СЃ РґР°РЅРЅС‹РјРё
+/*	РџРѕРІС‚РѕСЂРёС‚СЊ РІС‹РїРѕР»РЅРµРЅРёРµ Р·Р°РґР°РЅРёСЏ 1.2 РёР· Р»Р°Р±РѕСЂР°С‚РѕСЂРЅРѕР№ СЂР°Р±РѕС‚С‹ 7, РІРєР»СЋС‡РёРІ Р°РЅРѕРЅРёРјРЅС‹Р№ PL/SQL-Р±Р»РѕРє РІ С…СЂР°РЅРёРјСѓСЋ РїСЂРѕС†РµРґСѓСЂСѓ, СѓС‡РёС‚С‹РІР°СЏ, С‡С‚Рѕ:
+- РЅР°Р·РІР°РЅРёРµ РїСЂРѕС†РµРґСѓСЂС‹ вЂ“ generate_emp;
+- РІС…РѕРґРЅС‹Рј РїР°СЂР°РјРµС‚СЂРѕРј СЏРІР»СЏРµС‚СЃСЏ РєРѕР»РёС‡РµСЃС‚РІРѕ РІРЅРѕСЃРёРјС‹С… СЃС‚СЂРѕРє;
+- РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ РїР°РєРµС‚РЅСѓСЋ РѕРїРµСЂР°С†РёСЋ РІРЅРµСЃРµРЅРёСЏ FORALL.
+РЎСЂР°РІРЅРёС‚СЊ РІСЂРµРјРµРЅР° РІС‹РїРѕР»РЅРµРЅРёСЏ PL/SQL-Р±Р»РѕРєРѕРІ СЌС‚РѕРіРѕ Р·Р°РґР°РЅРёСЏ Рё Р·Р°РґР°РЅРёСЏ 1.2 РёР· Р»Р°Р±РѕСЂР°С‚РѕСЂРЅРѕР№ СЂР°Р±РѕС‚С‹ 7.
 */
 CREATE OR REPLACE PROCEDURE generate_emp 
 	(num_rows IN INTEGER)
@@ -49,11 +39,11 @@ BEGIN
 		VALUES(e_id(i), f_name(i), s_name(i), email (i), h_date(i), 'FI_MGR');
   t2 := DBMS_UTILITY.get_time;
   delta := t2 - t1;
-  DBMS_OUTPUT.PUT_LINE('Для FORALL-цикла: ' || TO_CHAR((delta)/100));
+  DBMS_OUTPUT.PUT_LINE('Р”Р»СЏ FORALL-С†РёРєР»Р°: ' || TO_CHAR((delta)/100));
 END;
 /
 
---	Аналогичная процедура с операцией FOR для сравнения
+--	РђРЅР°Р»РѕРіРёС‡РЅР°СЏ РїСЂРѕС†РµРґСѓСЂР° СЃ РѕРїРµСЂР°С†РёРµР№ FOR РґР»СЏ СЃСЂР°РІРЅРµРЅРёСЏ
 CREATE OR REPLACE PROCEDURE generate_emp_FOR 
 	(num_rows IN INTEGER)
 IS
@@ -72,11 +62,11 @@ BEGIN
   END LOOP;
   t2 := DBMS_UTILITY.get_time;
   delta := t2 - t1;
-  DBMS_OUTPUT.PUT_LINE('Для FOR-цикла: ' || TO_CHAR((delta)/100));
+  DBMS_OUTPUT.PUT_LINE('Р”Р»СЏ FOR-С†РёРєР»Р°: ' || TO_CHAR((delta)/100));
 END;
 /
 
-/*	Вызов процедур:
+/*	Р’С‹Р·РѕРІ РїСЂРѕС†РµРґСѓСЂ:
 BEGIN
 	generate_emp(10000);
 END;
@@ -89,17 +79,17 @@ END;
 
 
 PL/SQL procedure successfully completed.
-Для FORALL-цикла: .43
+Р”Р»СЏ FORALL-С†РёРєР»Р°: .43
 Rollback complete.
 PL/SQL procedure successfully completed.
-Для FOR-цикла: 7.65
+Р”Р»СЏ FOR-С†РёРєР»Р°: 7.65
 */
 
 
 
 /*
-  Этап 2 Создание хранимых процедур, функций и пакетов.
-2. Создать пакет pkg_dept по управлению таблицей подразделений.
+  Р­С‚Р°Рї 2 РЎРѕР·РґР°РЅРёРµ С…СЂР°РЅРёРјС‹С… РїСЂРѕС†РµРґСѓСЂ, С„СѓРЅРєС†РёР№ Рё РїР°РєРµС‚РѕРІ.
+2. РЎРѕР·РґР°С‚СЊ РїР°РєРµС‚ pkg_dept РїРѕ СѓРїСЂР°РІР»РµРЅРёСЋ С‚Р°Р±Р»РёС†РµР№ РїРѕРґСЂР°Р·РґРµР»РµРЅРёР№.
 */
 CREATE OR REPLACE PACKAGE pkg_dept IS
 
@@ -118,7 +108,7 @@ END pkg_dept;
 
 CREATE OR REPLACE PACKAGE BODY pkg_dept IS
 
---  2.1 функция удаления заданного подразделения
+--  2.1 С„СѓРЅРєС†РёСЏ СѓРґР°Р»РµРЅРёСЏ Р·Р°РґР°РЅРЅРѕРіРѕ РїРѕРґСЂР°Р·РґРµР»РµРЅРёСЏ
 FUNCTION drop_dept (dep_name IN VARCHAR2)
 RETURN NUMBER
 IS
@@ -141,7 +131,7 @@ EXCEPTION
 		RETURN -1;
 END;
 
---	2.2 процедура изменения названия подразделения
+--	2.2 РїСЂРѕС†РµРґСѓСЂР° РёР·РјРµРЅРµРЅРёСЏ РЅР°Р·РІР°РЅРёСЏ РїРѕРґСЂР°Р·РґРµР»РµРЅРёСЏ
 PROCEDURE change (dep_name_old IN VARCHAR2, dep_name_new IN VARCHAR2)
 IS
   dep_id departments.department_id%TYPE;
@@ -169,7 +159,7 @@ EXCEPTION
 		'Department with name ' || dep_name_new || ' is already exists');
 END;
 
---	2.3 функция создания подразделения, учитывая, что:
+--	2.3 С„СѓРЅРєС†РёСЏ СЃРѕР·РґР°РЅРёСЏ РїРѕРґСЂР°Р·РґРµР»РµРЅРёСЏ, СѓС‡РёС‚С‹РІР°СЏ, С‡С‚Рѕ:
 FUNCTION create_dept (dep_name IN VARCHAR2
                     , loc_name IN VARCHAR2
                     , cnt_name IN VARCHAR2
@@ -214,7 +204,7 @@ END;
 END pkg_dept;
 /
 
-/*	Пример вызова:
+/*	РџСЂРёРјРµСЂ РІС‹Р·РѕРІР°:
 SET SERVEROUTPUT ON
 EXECUTE DBMS_OUTPUT.PUT_LINE(pkg_dept.create_dept('IT_2', 'Southlake_2', 'United States of America', 'Americas'));
 */
@@ -222,7 +212,7 @@ EXECUTE DBMS_OUTPUT.PUT_LINE(pkg_dept.create_dept('IT_2', 'Southlake_2', 'United
 
 
 
---	3. Создать пакет pkg_emp по управлению таблицей сотрудников
+--	3. РЎРѕР·РґР°С‚СЊ РїР°РєРµС‚ pkg_emp РїРѕ СѓРїСЂР°РІР»РµРЅРёСЋ С‚Р°Р±Р»РёС†РµР№ СЃРѕС‚СЂСѓРґРЅРёРєРѕРІ
 CREATE OR REPLACE PACKAGE pkg_emp IS
 	TYPE emp_list IS TABLE OF VARCHAR2(500);
 	FUNCTION drop_emp (dep_name IN VARCHAR2) RETURN emp_list PIPELINED;
@@ -233,7 +223,7 @@ END pkg_emp;
 /
 
 CREATE OR REPLACE PACKAGE BODY pkg_emp IS
---  3.1 процедура изменения информации о сотруднике
+--  3.1 РїСЂРѕС†РµРґСѓСЂР° РёР·РјРµРЅРµРЅРёСЏ РёРЅС„РѕСЂРјР°С†РёРё Рѕ СЃРѕС‚СЂСѓРґРЅРёРєРµ
 PROCEDURE change (emp_nam IN VARCHAR2, job_old IN VARCHAR2
                 , dep_old IN VARCHAR2, job_new IN VARCHAR2
                 , dep_new IN VARCHAR2, sal_new IN NUMBER)
@@ -271,7 +261,7 @@ EXCEPTION	WHEN NO_DATA_FOUND THEN
   RAISE_APPLICATION_ERROR(-20550, 'Employee is not found');
 END;
 
---  3.2 функция удаления всех сотрудников заданного подразделения
+--  3.2 С„СѓРЅРєС†РёСЏ СѓРґР°Р»РµРЅРёСЏ РІСЃРµС… СЃРѕС‚СЂСѓРґРЅРёРєРѕРІ Р·Р°РґР°РЅРЅРѕРіРѕ РїРѕРґСЂР°Р·РґРµР»РµРЅРёСЏ
 FUNCTION drop_emp (dep_name IN VARCHAR2)
   RETURN emp_list PIPELINED AS
   PRAGMA AUTONOMOUS_TRANSACTION;
@@ -301,6 +291,6 @@ END;
 END pkg_emp;
 /
 
-/*	Пример вызова:
+/*	РџСЂРёРјРµСЂ РІС‹Р·РѕРІР°:
 SELECT * FROM TABLE(pkg_emp.drop_emp('Finance'));
 */
